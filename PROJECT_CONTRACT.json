@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2336,
+    "production_files": 35,
+    "production_packages": 8,
+    "test_files": 9,
+    "production_functions": 193,
+    "decision_points": 359
+  },
+  "persistence": {
+    "module": "modernc.org/sqlite",
+    "entities": [
+      "WarrantyRecord",
+      "ServicePoint",
+      "AdminAudit",
+      "SupportAdvice"
+    ],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {
+      "steps": [
+        "接收消费者手机号和设备序列号",
+        "校验并规范化查询输入",
+        "读取SQLite延保与服务网点记录",
+        "返回延保状态和服务网点结果"
+      ],
+      "test": "TestPrimaryWorkflow"
+    },
+    {
+      "steps": [
+        "验证管理员令牌和请求字段",
+        "创建或更新WarrantyRecord",
+        "保存服务网点关联和审计记录",
+        "返回管理员维护确认结果"
+      ],
+      "test": "TestSecondaryWorkflow"
+    },
+    {
+      "steps": [
+        "接收不存在设备的查询",
+        "适配器读取缺失记录",
+        "判定未找到并生成SupportAdvice",
+        "返回客服核对建议和联系方式"
+      ],
+      "test": "TestTertiaryWorkflow"
+    }
+  ]
+}
